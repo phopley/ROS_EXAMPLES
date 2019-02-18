@@ -11,6 +11,8 @@ int main(int argc, char** argv){
     double laser_frequency = 1;
     double ranges[num_readings];
     double intensities[num_readings];
+    sensor_msgs::LaserScan scan;
+    bool test = true;
 
     ros::Rate r(1.0);
     while(n.ok())
@@ -21,16 +23,36 @@ int main(int argc, char** argv){
             ranges[i] = 5;
             intensities[i] = 0;
         }
+        
+        if(test == true)
+        {
+            ranges[0] = 6;
+        }
+        else
+        {
+            ranges[num_readings-1] = 4;
+        }
+        
     
         ros::Time scan_time = ros::Time::now();
 
-        //populate the LaserScan message
-        sensor_msgs::LaserScan scan;
+        //populate the LaserScan message        
         scan.header.stamp = scan_time;
         scan.header.frame_id = "laser_frame";
-        scan.angle_min = -1.57;
-        scan.angle_max = 1.57;
-        scan.angle_increment = (3.14 / num_readings);
+        if(test == true)
+        {
+            scan.angle_min = -1.571;
+            scan.angle_max = 1.553;
+            scan.angle_increment = (3.142 / num_readings);
+            test = false;
+        }
+        else
+        {
+            scan.angle_min = 1.553;
+            scan.angle_max = -1.571;
+            scan.angle_increment = -(3.142 / num_readings);   
+            test = true;     
+        }
         scan.time_increment = (1 / laser_frequency) / (num_readings);
         scan.range_min = 0.0;
         scan.range_max = 30.0;
@@ -43,7 +65,7 @@ int main(int argc, char** argv){
             scan.intensities[i] = intensities[i];
         }
 
-        scan_pub.publish(scan);
+        scan_pub.publish(scan);        
         r.sleep();
     }
 }
