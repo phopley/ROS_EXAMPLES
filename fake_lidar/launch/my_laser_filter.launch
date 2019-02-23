@@ -1,0 +1,5 @@
+<launch>
+  <rosparam command="load" file="$(find fake_lidar)/config/my_laser_config.yaml" ns="scan_to_scan_filter_chain" />
+  <node pkg="fake_lidar" type="fake_lidar_node" name="fake_lidar_node" output="screen"/>
+  <node pkg ="laser_filters" type="scan_to_scan_filter_chain" name="scan_to_scan_filter_chain" output="screen" />
+</launch>
